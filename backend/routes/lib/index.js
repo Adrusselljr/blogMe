@@ -1,13 +1,13 @@
 const { checkIsEmpty } = require('./checkIsEmpty')
-const { validateCreate } = require('./validateCreate.js')
-const { validateLogin } = require('./validateLogin')
+const { validateCreateUser } = require('./validateCreateUser.js')
+const { validateLoginUser } = require('./validateLoginUser')
 const { jwtMiddleware } = require('./jwtMiddleware')
-const { validateUpdate } = require('./validateUpdate')
+const { validateUpdateUser } = require('./validateUpdateUser')
 
 module.exports = {
     checkIsEmpty,
-    validateCreate,
-    validateLogin,
+    validateCreateUser,
+    validateLoginUser,
     jwtMiddleware,
-    validateUpdate
+    validateUpdateUser
 }

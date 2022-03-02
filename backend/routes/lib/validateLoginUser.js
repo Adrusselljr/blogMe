@@ -1,6 +1,6 @@
 const { isEmail } = require('validator')
 
-const validateLogin = (req, res, next) => {
+const validateLoginUser = (req, res, next) => {
 
     const { email } = req.body
 
@@ -22,5 +22,5 @@ const validateLogin = (req, res, next) => {
 }
 
 module.exports = {
-    validateLogin
+    validateLoginUser
 }
