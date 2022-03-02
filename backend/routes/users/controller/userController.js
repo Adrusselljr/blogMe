@@ -57,7 +57,24 @@ const userLogin = async(req, res) => {
 
 }
 
+const updateUser = async(req, res) => {
+    try {
+        const decodedToken = res.locals.decodedToken
+
+        const salt = await bcrypt.genSalt(10)
+        const hashPassword = await bcrypt.hash(req.body.password, salt)
+        req.body.password = hashPassword
+
+        const updatedUser = await User.findOneAndUpdate({ email: decodedToken.email }, req.body, { new: true })
+        res.status(200).json({ message: "Updated user", payload: updatedUser })
+    }
+    catch (error) {
+        res.status(500).json({ error: errorHandler(error) })
+    }
+}
+
 module.exports = {
     createUser,
-    userLogin
+    userLogin,
+    updateUser
 }
