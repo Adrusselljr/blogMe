@@ -66,16 +66,17 @@ const deleteComment = async(req, res) => {
         const foundPost = await Post.findById(deleteComment.post)
         const foundComment = await Comment.find({ owner: foundUser.id })
 
-        if(foundUser.id !== foundComment.owner) {
-            return res.status(500).json({ message: "You do not have permission!"})
-        }
-        
-        foundUser.commentHistory.pull(id)
-        foundPost.commentHistory.pull(id)
-        await foundUser.save()
-        await foundPost.save()
+        if(foundUser.id === foundComment.owner) {
+            foundUser.commentHistory.pull(id)
+            foundPost.commentHistory.pull(id)
+            await foundUser.save()
+            await foundPost.save()
 
-        res.status(200).json({ message: "Comment has been deleted", payload: deleteComment })
+            res.status(200).json({ message: "Comment has been deleted", payload: deleteComment })
+        }
+        else {
+            throw { message: "You do not have permission!" }
+        }
     }
     catch (error) {
         console.log(error)
@@ -93,13 +94,13 @@ const updateComment = async(req, res) => {
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
 
-        const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, { new: true })
-        
-        if(foundUser.id !== commentId.owner) {
-            return res.status(500).json({ message: "You do not have permission!"})
+        if(foundUser.id === commentId.owner) {
+            const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, { new: true })
+            res.status(200).json({ message: "Comment has been updated", payload: updatedComment })
         }
-
-        res.status(200).json({ message: "Comment has been updated", payload: updatedComment })
+        else {
+            throw { message: "You do not have permission!" }
+        }
     }
     catch (error) {
         res.status(500).json({ message: "Error", error: error.message })
