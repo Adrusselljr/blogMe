@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
 
     commentHistory: [{
         type: mongoose.Schema.ObjectId,
-        ref: "comments"
+        ref: "comment"
     }]
 
 }, { timestamps: true })

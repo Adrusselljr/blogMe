@@ -12,7 +12,7 @@ const PostSchema = new mongoose.Schema({
 
     commentHistory: [{
         type: mongoose.Schema.ObjectId,
-        ref: "comments"
+        ref: "comment"
     }],
 
     owner: {

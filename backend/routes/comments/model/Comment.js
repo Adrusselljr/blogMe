@@ -11,7 +11,7 @@ const CommentSchema = new mongoose.Schema({
         ref: "post"
     },
 
-    user: {
+    owner: {
         type: mongoose.Schema.ObjectId,
         ref: "user"
     }
