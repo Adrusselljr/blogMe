@@ -23,7 +23,7 @@ const createUser = async(req, res) => {
         res.status(200).json({ message: "New user has been saved", payload: savedUser })
     }
     catch(error) {
-        res.status(500).json({ error: errorHandler(error) })
+        res.status(500).json({ message: "Error", error: errorHandler(error) })
     }
 
 }
@@ -69,7 +69,7 @@ const updateUser = async(req, res) => {
         res.status(200).json({ message: "Updated user", payload: updatedUser })
     }
     catch (error) {
-        res.status(500).json({ error: errorHandler(error) })
+        res.status(500).json({ message: "Error", error: errorHandler(error) })
     }
 }
 

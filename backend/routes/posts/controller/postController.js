@@ -24,7 +24,7 @@ const createPost = async(req, res) => {
         res.status(200).json({ mesaage: "Saved new post", payload: savedPost })
     }
     catch (error) {
-        res.status(500).json({ error: errorHandler(error) })
+        res.status(500).json({ message: "Error", error: errorHandler(error) })
     }
 
 }
@@ -67,8 +67,23 @@ const deletePost = async(req, res) => {
     
 }
 
+const updatePost = async(req, res) => {
+
+    const { postId } = req.body
+
+    try {
+        const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true })
+
+        res.status(200).json({ message: "Post has been updated", payload: updatedPost })
+    }
+    catch (errot) {
+        res.status(500).json({ message: "Error", error: errorHandler(error) })
+    }
+}
+
 module.exports = {
     createPost,
     getAllPosts,
-    deletePost
+    deletePost,
+    updatePost
 }
