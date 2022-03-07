@@ -1,5 +1,6 @@
 const Post = require('../model/Post')
 const User = require('../../users/model/User')
+const Comment = require('../../comments/model/Comment')
 
 const createPost = async(req, res) => {
 
@@ -61,7 +62,9 @@ const deletePost = async(req, res) => {
             foundUser.postHistory.pull(id)
             await foundUser.save()
 
-            res.status(200).json({ message: "Post was deleted", payload: deletePost })
+            const deleteComments =  await Comment.deleteMany({ post: id })
+
+            res.status(200).json({ message: "Post was deleted", deletedPost: deletePost, deletedComments: deleteComments })
         }
         else {
             throw { message: "You do not have permission!" }
