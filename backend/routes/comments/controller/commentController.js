@@ -66,7 +66,7 @@ const deleteComment = async(req, res) => {
         const foundPost = await Post.findById(deleteComment.post)
         const foundComment = await Comment.find({ owner: foundUser.id })
 
-        if(foundUser.id === foundComment.owner) {
+        if(foundUser.toString() === foundComment.toString()) {
             foundUser.commentHistory.pull(id)
             foundPost.commentHistory.pull(id)
             await foundUser.save()
@@ -94,7 +94,7 @@ const updateComment = async(req, res) => {
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
 
-        if(foundUser.id === commentId.owner) {
+        if(foundUser.toString() === commentId.toString()) {
             const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, { new: true })
             res.status(200).json({ message: "Comment has been updated", payload: updatedComment })
         }

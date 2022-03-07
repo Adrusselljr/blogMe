@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 })
 
 router.post('/create-post', checkIsEmpty, jwtMiddleware, createPost)
-router.get('/get-all-posts', jwtMiddleware, getAllPosts)
+router.get('/get-all-posts', getAllPosts)
 router.delete('/delete-post/:id', jwtMiddleware, deletePost)
 router.put('/update-post', checkIsEmpty, jwtMiddleware, updatePost)
 

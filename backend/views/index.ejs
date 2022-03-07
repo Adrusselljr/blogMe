@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+<html lang="en">
+
+<% include ./partials/head %> 
+
+<body>
+
+    <% include ./partials/nav %> 
+
+    <% console.log(posts) %><br>
+
+    <% if (posts.length > 0) { %>
+      <% posts.forEach(e => { %>
+        <h4>Title: <%= e.title %> </h4>
+        <p>Post: <%= e.post %> </p>
+        <p>Author: <%= e.owner.username %> </p><br>
+      <% }) %>
+    <% } else { %>
+      <p>There's no posts yet!</p>
+    <% } %>
+
+  
+</body>
+
 </html>
