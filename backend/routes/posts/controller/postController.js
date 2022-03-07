@@ -1,6 +1,5 @@
 const Post = require('../model/Post')
 const User = require('../../users/model/User')
-const { errorHandler } = require('../../utils/errorHandler')
 
 const createPost = async(req, res) => {
 
