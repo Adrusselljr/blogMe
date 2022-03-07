@@ -31,7 +31,7 @@ const createComment = async(req, res) => {
         res.status(200).json({ message: "Saved new comment", payload: savedComment })
     }
     catch (error) {
-        res.status(500).json({ message: "Error", error: error })
+        res.status(500).json({ message: "Error", error: error.message })
     }
 
 }

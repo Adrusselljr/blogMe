@@ -24,7 +24,7 @@ const createPost = async(req, res) => {
         res.status(200).json({ mesaage: "Saved new post", payload: savedPost })
     }
     catch (error) {
-        res.status(500).json({ message: "Error", error: errorHandler(error) })
+        res.status(500).json({ message: "Error", error: error.message })
     }
 
 }
@@ -92,7 +92,7 @@ const updatePost = async(req, res) => {
         }
     }
     catch (error) {
-        res.status(500).json({ message: "Error", error: errorHandler(error) })
+        res.status(500).json({ message: "Error", error: error.mesaage })
     }
 
 }
