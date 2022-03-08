@@ -51,25 +51,33 @@ const deletePost = async(req, res) => {
         if(!foundUser) throw { message: "User not found" }
         
         const foundPost = await Post.findById(id)
-        console.log(foundUser)
-        console.log(foundPost)
         if(foundUser._id.toString() === foundPost.owner.toString()) {
             const deletePost = await Post.findByIdAndDelete(id)
             if(deletePost === null) throw { mesaage: "No post with id found!" }
 
+            if(foundPost.commentHistory.length > 0) {
+                const foundComments = await Comment.find({ post: id })
+                await foundComments.map(async comment => {
+                    let commentUser = await User.findById(comment.owner)
+                    await commentUser.commentHistory.pull(comment._id)
+                })
+                await Comment.deleteMany({ post: id })
+
+                // await foundPost.commentHistory.map(e => {
+                //     foundUser.commentHistory.pull(e)
+                // })
+            }
+
             foundUser.postHistory.pull(id)
             await foundUser.save()
 
-            const deleteComments =  await Comment.deleteMany({ post: id })
-
-            res.status(200).json({ message: "Post was deleted", deletedPost: deletePost, deletedComments: deleteComments })
+            res.status(200).json({ message: "Post was deleted", deletedPost: deletePost, deletedInUser: foundUser })
         }
         else {
             throw { message: "You do not have permission!" }
         }
     }
     catch (error) {
-        console.log(error)
         res.status(500).json({ message: "Error", error: error.message })
     }
     
