@@ -49,26 +49,25 @@ const deletePost = async(req, res) => {
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
-        
         const foundPost = await Post.findById(id)
+        if(foundPost === null) throw { mesaage: "No post with id found!" }
+        
         if(foundUser._id.toString() === foundPost.owner.toString()) {
             const deletePost = await Post.findByIdAndDelete(id)
             if(deletePost === null) throw { mesaage: "No post with id found!" }
 
             if(foundPost.commentHistory.length > 0) {
                 const foundComments = await Comment.find({ post: id })
+                if(foundComments === null) throw { mesaage: "No post with id found!" }
                 await foundComments.map(async comment => {
                     let commentUser = await User.findById(comment.owner)
-                    await commentUser.commentHistory.pull(comment._id)
+                    await commentUser.commentHistory.pull(comment._id.toString())
+                    await commentUser.save()
                 })
                 await Comment.deleteMany({ post: id })
-
-                // await foundPost.commentHistory.map(e => {
-                //     foundUser.commentHistory.pull(e)
-                // })
             }
 
-            foundUser.postHistory.pull(id)
+            await foundUser.postHistory.pull(id)
             await foundUser.save()
 
             res.status(200).json({ message: "Post was deleted", deletedPost: deletePost, deletedInUser: foundUser })
