@@ -56,6 +56,9 @@ const deleteComment = async(req, res) => {
     const { id } = req.params
 
     try {
+        const foundComment = await Comment.findById(id)
+        if(!foundComment) throw { message: "Comment not found" }
+
         const deleteComment = await Comment.findByIdAndDelete(id)
         if(!deleteComment) throw { message: "No comment with id found!"}
 
@@ -66,10 +69,7 @@ const deleteComment = async(req, res) => {
         const foundPost = await Post.findById(deleteComment.post)
         if(!foundPost) throw { message: "Post not found" }
 
-        const foundComment = await Comment.findById(id)
-        if(!foundComment) throw { message: "Comment not found" }
-
-        if(foundUser.toString() === foundComment.toString()) {
+        if(foundComment.owner.toString() === foundUser._id.toString()) {
             foundUser.commentHistory.pull(id)
             foundPost.commentHistory.pull(id)
             await foundUser.save()
@@ -95,7 +95,7 @@ const updateComment = async(req, res) => {
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
-        const foundComment = await Comment.findById(id)
+        const foundComment = await Comment.findById(commentId)
         if(!foundComment) throw { message: "Comment not found" }
 
         if(foundComment.owner.toString() === foundUser._id.toString()) {
@@ -107,6 +107,7 @@ const updateComment = async(req, res) => {
         }
     }
     catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Error", error: error })
     }
 

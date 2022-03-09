@@ -92,8 +92,10 @@ const updatePost = async(req, res) => {
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
+        const foundPost = await Post.findById(postId)
+        if(!foundPost) throw { message: "Post not found" }
 
-        if(foundUser._id.toString() === postId.owner.toString()) {
+        if(foundUser._id.toString() === foundPost.owner.toString()) {
             const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true })
             res.status(200).json({ message: "Post has been updated", payload: updatedPost })
         }
