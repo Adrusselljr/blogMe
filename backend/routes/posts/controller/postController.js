@@ -49,16 +49,18 @@ const deletePost = async(req, res) => {
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
+
         const foundPost = await Post.findById(id)
-        if(foundPost === null) throw { mesaage: "No post with id found!" }
+        if(!foundPost) throw { mesaage: "No post with id found!" }
         
         if(foundUser._id.toString() === foundPost.owner.toString()) {
             const deletePost = await Post.findByIdAndDelete(id)
-            if(deletePost === null) throw { mesaage: "No post with id found!" }
+            if(!deletePost) throw { mesaage: "No post with id found!" }
 
             if(foundPost.commentHistory.length > 0) {
                 const foundComments = await Comment.find({ post: id })
-                if(foundComments === null) throw { mesaage: "No post with id found!" }
+                if(!foundComments) throw { mesaage: "No post with id found!" }
+                
                 await foundComments.map(async comment => {
                     let commentUser = await User.findById(comment.owner)
                     await commentUser.commentHistory.pull(comment._id.toString())
@@ -91,7 +93,7 @@ const updatePost = async(req, res) => {
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
 
-        if(foundUser.idtoString() === postId.ownertoString()) {
+        if(foundUser._id.toString() === postId.owner.toString()) {
             const updatedPost = await Post.findByIdAndUpdate(postId, req.body, { new: true })
             res.status(200).json({ message: "Post has been updated", payload: updatedPost })
         }
@@ -100,7 +102,8 @@ const updatePost = async(req, res) => {
         }
     }
     catch (error) {
-        res.status(500).json({ message: "Error", error: error.mesaage })
+        console.log(error)
+        res.status(500).json({ message: "Error", error: error })
     }
 
 }

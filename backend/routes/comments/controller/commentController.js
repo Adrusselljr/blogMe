@@ -57,14 +57,17 @@ const deleteComment = async(req, res) => {
 
     try {
         const deleteComment = await Comment.findByIdAndDelete(id)
-        if(deleteComment === null) throw { message: "No comment with id found!"}
+        if(!deleteComment) throw { message: "No comment with id found!"}
 
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
         
         const foundPost = await Post.findById(deleteComment.post)
-        const foundComment = await Comment.find({ owner: foundUser.id })
+        if(!foundPost) throw { message: "Post not found" }
+
+        const foundComment = await Comment.findById(id)
+        if(!foundComment) throw { message: "Comment not found" }
 
         if(foundUser.toString() === foundComment.toString()) {
             foundUser.commentHistory.pull(id)
@@ -79,8 +82,7 @@ const deleteComment = async(req, res) => {
         }
     }
     catch (error) {
-        console.log(error)
-        res.status(500).json({ message: "Error", error: error.message })
+        res.status(500).json({ message: "Error", error: error })
     }
 
 }
@@ -93,8 +95,10 @@ const updateComment = async(req, res) => {
         const decodedToken = res.locals.decodedToken
         const foundUser =  await User.findOne({ email: decodedToken.email })
         if(!foundUser) throw { message: "User not found" }
+        const foundComment = await Comment.findById(id)
+        if(!foundComment) throw { message: "Comment not found" }
 
-        if(foundUser.toString() === commentId.toString()) {
+        if(foundComment.owner.toString() === foundUser._id.toString()) {
             const updatedComment = await Comment.findByIdAndUpdate(commentId, req.body, { new: true })
             res.status(200).json({ message: "Comment has been updated", payload: updatedComment })
         }
@@ -103,7 +107,7 @@ const updateComment = async(req, res) => {
         }
     }
     catch (error) {
-        res.status(500).json({ message: "Error", error: error.message })
+        res.status(500).json({ message: "Error", error: error })
     }
 
 }

@@ -11,18 +11,18 @@
     <% console.log(posts) %><br>
 
     <% if (posts.length > 0) { %>
-      <% posts.forEach(e => { %>
-        <h4>Title: <%= e.title %> </h4>
-        <p>Post: <%= e.post %> </p>
-        <p>Author: <%= e.owner.username %> </p><br>
+		<% posts.forEach(e => { %>
+			<h4>Title: <%= e.title %> </h4>
+			<p>Post: <%= e.post %> </p>
+			<p>Author: <%= e.owner.username %> </p><br>
         <% e.commentHistory.forEach(comment => { %>
-          <p>Comment: <%= comment %> </p>
+			<p>Comment: <%= comment %> </p>
         <% }) %>
-      <% }) %>
+    <% }) %>
     <% } else { %>
-      <p>There's no posts yet!</p>
+		<p>There's no posts yet!</p>
     <% } %>
-  
+
 </body>
 
 </html>
